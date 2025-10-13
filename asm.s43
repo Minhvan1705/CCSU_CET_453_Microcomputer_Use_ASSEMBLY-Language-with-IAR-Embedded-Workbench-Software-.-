@@ -1,0 +1,49 @@
+#include  "msp430.h"
+;-------------------------------------------------------------------------------
+            ORG     0F800h                  ; Program Start
+;-------------------------------------------------------------------------------
+RESET       
+            MOV.W   #WDTPW+WDTHOLD,&WDTCTL  ; Stop WDT 
+            MOV.W   #0280h,SP               ; Initialize stackpointer
+            MOV.W   #0000h,R14              ; Initialize counter
+SetupP1     BIS.B   #001h,&P1DIR            ; P1.0 output, P1.3 input
+            BIS.B   #008h,&P1REN            ; P1.3 pull up resistor enabled
+            BIS.B   #008h,&P1IES            ; P1.3 interrupt on high to low transition
+            BIS.B   #008h,&P1IE             ; P1.3 interrupt enabled
+            BIS.B   #008h,&P1OUT            ; P1.3 pull up resistor enabled
+EnableInts
+            BIS.W   #GIE, SR                ; enable interrups (global interrupt enable)
+main        NOP
+  
+            CMP.W   #005,R14                ; compare the number of times the input went low with 5dec
+            JHS     turnoffLED              ; if this happened 5 or more times, just turn off the led
+
+            BIT.B   #008h, &P1IN            ; test only p1.3 (bit 3) by AND'ing with 0b00001000
+            JC      turnonLED               ; if C was set, bit 3 was set (p1.3 was high), if not set p1.3 was low
+turnoffLED: 
+            BIC.B   #001h, &P1OUT
+            JMP     donewithLED            
+turnonLED:  
+            BIS.B   #001h, &P1OUT
+donewithLED:            
+            JMP     main
+
+P1_ISR:
+            BIT.B   #008h,&P1IFG            ; ensure that this input is the reason for the interrupt
+            JNC     doneP1_ISR              ; if not don't increment the counter
+            ADD.W   #001h,R14
+doneP1_ISR:
+            BIC.B   #008h,&P1IFG            ; clear interrupt flag
+            RETI                            ; return from interrupt
+            
+;-------------------------------------------------------------------------------
+;           Interrupt Vectors
+;-------------------------------------------------------------------------------
+            ORG     0FFE4h                  ; P1 Interrupt Vector
+            DW      P1_ISR
+            ORG     0FFFEh                  ; MSP430 RESET Vector
+            DW      RESET                   ;
+            END
+  
+  
+  
