@@ -1,0 +1,60 @@
+#include "msp430.h"                     ; #define controlled include file
+
+        ORG     0F800h
+
+init:   MOV.W   #0280h, SP              ; set up stack
+        MOV.W   #WDTPW+WDTHOLD,&WDTCTL  ; Stop watchdog timer
+        MOV.W   #0000h, R14
+        MOV.W   #0000h, R4  
+setupP1:
+        BIS.B   #001h, &P1DIR           ; P1.0 output
+SetupC0
+        MOV.W   #CCIE,&CCTL0            ; CCR0 interrupt enabled
+        MOV.W   #50000,&CCR0            ;
+SetupTA     
+        MOV.W   #TASSEL_2+MC_2,&TACTL   ; SMCLK, contmode
+        
+        BIS.W   #GIE,SR                 ; enable interrupts
+        MOV.W   #000h, R4               ; loop counter for main loop
+
+main:   NOP                             ; main program
+        ADD.W   #001h, R4             ; Increment loop counter
+        
+        CALL    #THESUB          
+        NOP
+        NOP
+        NOP
+        NOP
+        JMP     main                        ; jump to current location
+                                        ; (endless loop)
+                                                               
+                                        
+                                        
+;-------------------------------------------------------------------------------
+;           Subroutines
+;-------------------------------------------------------------------------------                                        
+THESUB:                                        
+        PUSH.W  R4                       
+        MOV.W   #0F000h, R4                
+        ADD.W   #00F00h, R4
+        ADD.W   #000F0h, R4
+        POP.W   R4                       
+        RET                                  
+
+
+;-------------------------------------------------------------------------------
+;           Interrupt Service Routines
+;-------------------------------------------------------------------------------                
+TA0_ISR;    
+        XOR.B   #001h,&P1OUT            ; Toggle P1.0
+        MOV.W   #0000h,&TAR             ; Reset Timer A 
+        RETI                 
+        
+;-------------------------------------------------------------------------------
+;           Interrupt Vectors
+;-------------------------------------------------------------------------------
+        ORG     0FFFEh
+        DC16    init                    ; set reset vector to 'init' label
+        ORG     0FFF2h                  ; Timer_A0 Vector
+        DW      TA0_ISR  
+        END
