@@ -1,0 +1,37 @@
+/*
+          bits2 project asm.s43 project for LAB 9
+
+
+*/
+#include "msp430.h"                     ; #define controlled include file
+
+        NAME    main                    ; module name
+
+        PUBLIC  main                    ; make the main label vissible
+                                        ; outside this module
+        ORG     0FFFEh
+        DC16    init                    ; set reset vector to 'init' label
+
+        RSEG    CSTACK                  ; pre-declaration of segment
+        RSEG    CODE                    ; place program in 'CODE' segment
+
+init:   NOP
+        MOV.B #041h, R4                 ; R4 = question 11 variable
+        MOV.B #041h, R5                 ; R5 = question 12 variable
+        MOV.B #0F0h, R6                 ; R6 = question 13 variable
+        MOV.B #0FCh, R7                 ; R7 = question 14 variable
+        
+        
+        ADD.B #0h, R4                   ; clear carry
+        
+        
+main:                                    ; main program
+
+        
+        ;RRC.B R4                       ; question eleven instruction    11
+        ;RRA.B R5                       ; question twelve instruction    12
+        ;RRA.B R6                       ; question thirteen instruction  13
+        ;SXT R7                         ; question fourteen instruction  14
+
+        JMP main
+        END
