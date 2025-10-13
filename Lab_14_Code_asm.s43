@@ -57,4 +57,5 @@ TA0_ISR;
         DC16    init                    ; set reset vector to 'init' label
         ORG     0FFF2h                  ; Timer_A0 Vector
         DW      TA0_ISR  
+
         END
