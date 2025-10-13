@@ -1,0 +1,39 @@
+; 
+;           "bits" project for Lab 8
+;           CET 453
+;
+;       
+;
+
+#include "msp430.h"                     ; #define controlled include file
+
+        NAME    main                    ; module name
+        PUBLIC  main                    ; make the main label vissible
+                                        ; outside this module
+        ORG     0FFFEh
+        DC16    init                    ; set reset vector to 'init' label
+
+        ORG     0F800h                  ; place program in 'CODE' segment
+init:   NOP
+        MOV.W   #005A0h, R4
+        MOV.W   #0FFFFh, R5
+        
+        
+        
+        
+main:   NOP                             ; main program     
+        BIT.W   #00180h, R4   
+        BIT.W   #08000h, R4
+
+        AND.W   #00180h, R4
+        AND.W   #08000h, R4
+
+        BIC.W   #0FC00h, R5
+
+        BIS.W   #0C000h, R5
+
+        XOR.W   #0FFFFh, R5
+
+        JMP init                          
+                                       
+        END
