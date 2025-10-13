@@ -17,3 +17,4 @@ main:   NOP                             ; main program
         JMP $                           ; jump to current location '$'
                                         ; (endless loop)
         END
+
