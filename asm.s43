@@ -1,0 +1,41 @@
+#include "msp430.h"                     ; #define controlled include file
+
+        ORG     0F800h
+
+init:   MOV.W   #0280h, SP              ; set up stack
+        MOV.W   #WDTPW+WDTHOLD,&WDTCTL  ; Stop watchdog timer
+        MOV.W   #0000h, R5
+        MOV.W   #000h, R4               ; loop counter for main loop
+
+main:   NOP                             ; main program
+        
+        CMP.W #005, R5
+        JHS POPTIME
+        
+        ADD.W   #001h, R4             ; Increment loop counter
+        PUSH  R4
+        
+        ADD.W   #001h, R5
+
+        JMP   main
+        
+POPTIME:
+        POP   R14
+        POP   R14
+        POP   R14
+        POP   R14
+        POP   R14
+        MOV.W #00, R5
+       
+        JMP     main                        ; jump to current location
+                                        ; (endless loop)
+                                                               
+                                        
+                                        
+        
+;-------------------------------------------------------------------------------
+;           Interrupt Vectors
+;-------------------------------------------------------------------------------
+        ORG     0FFFEh
+        DC16    init                    ; set reset vector to 'init' label
+        END
