@@ -1,0 +1,30 @@
+#include  "msp430g2553.h"
+;-------------------------------------------------------------------------------
+            ORG     0F800h                  ; Program Reset
+;-------------------------------------------------------------------------------
+RESET       mov.w   #0280h,SP               ; Initialize stackpointer
+StopWDT     mov.w   #WDTPW+WDTHOLD,&WDTCTL  ; Stop WDT 
+SetupP1     bis.b   #001h,&P1DIR            ; P1.0 output
+
+
+          ;  bis.b   #020h,&P1REN            ; pull ups on p1.5 
+
+
+main        bit.b   #020h,&P1IN             ; test P1.5
+            jz      ledoff            
+
+
+ledon           
+            bis.b   #001h,&P1OUT            ; bring P1.0 high 
+            
+            jmp     main
+            
+ledoff      bic.b   #001h,&P1OUT            ; bring P1.0 low
+            
+            jmp     main
+;-------------------------------------------------------------------------------
+;           Interrupt Vectors
+;-------------------------------------------------------------------------------
+            ORG     0FFFEh                  ; MSP430 RESET Vector
+            DW      RESET                   ;
+            END
