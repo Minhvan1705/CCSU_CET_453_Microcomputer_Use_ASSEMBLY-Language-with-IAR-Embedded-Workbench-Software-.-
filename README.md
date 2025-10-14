@@ -1,4 +1,4 @@
-# CCSU_CET_453 Microcomputer Use Assembly Language Programming with IAR Embedded Workbench software ( code file . asm) 
+# CCSU_CET_453 Microcomputer Use ASSEMBLY Language Programming with IAR Embedded Workbench software ( code file . asm) 
 Integrated with MSP430G2553 microprocessor/microcontroller - Texas Instrument hardware development kit.
 
 Microcontroller architecture including:
