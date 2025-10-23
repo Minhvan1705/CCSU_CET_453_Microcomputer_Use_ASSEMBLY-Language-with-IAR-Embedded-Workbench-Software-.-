@@ -9,7 +9,7 @@ Assembly language programming including:
 Projects focus on solving real world problems following a standard development process.  
 
 
-                    ---------------- oOo ---------------
+                                  ---------------- oOo ---------------
 
 Project Final is LightShow have file code ASSEMBLY Language Programming is Final_Project_code.asm
 
